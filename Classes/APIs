@@ -1,0 +1,479 @@
+	auto listener = EventListenerTouchOneByOne::create();
+	listener->setSwallowTouches(true);
+	listener->onTouchBegan = CC_CALLBACK_1(HelloWorld::onTouchBegan, this);
+//	listener->onTouchMoved = CC_CALLBACK_2(HelloWorld::onTouchBegan, this);
+//	listener->onTouchEnded = CC_CALLBACK_2(HelloWorld::onTouchBegan, this);
+	
+
+//	auto action = MoveTo::create(3, Point(100, 0));
+//	auto action = JumpBy::create(3, Point(100, 0), 50, 3);
+//	auto action = JumpTo::create(3, Point(100, 0), 50, 3);
+//	auto action = Place::create(Point(50, 3));
+//	auto action = ScaleBy::create(3, 3);
+//	auto action = ScaleTo::create(3, 3);
+//	auto action = RotateBy::create(3, 3);
+//	auto action = RotateBy::create(3, 90);
+//	auto action = RotateTo::create(3, 90);
+//	auto action = TintBy::create(3, r, g, b);
+//	auto action = TintTo::create(3, r, g, b);
+//	auto action = FadeTo::create(3, alpha);
+//	auto action = FadeIn::create(3);
+//	auto action = FadeOut::create(3);
+//	auto action = Repeat::create(action, times);
+//	auto action = SkewBy::create(t, x, y);
+//	auto action = SkewTo::create(t, x, y);
+//	ccBezierConfig bezier;
+//	bezier.controlPoint_1 = Point(x, y);
+//	bezier.controlPoint_2 = Point(x, y);
+//	bezier.endPosition = Point(200, 100);
+//	auto action = BezierBy::create(3, bezier);
+
+
+//	cocosDenshion::SimpleAudioEngine::getInstance()->setEffectsVolume(0.5);
+//	cocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound.wav");
+//	cocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sound.wav");
+
+//	this->schedule(schedule_selector(HelloWorld::StopEffect), 3);
+
+void HelloWord::StopEffect(float a)
+{
+//	cocosDenshion::SimpleAudioEngine::getInstance()->stopAllEffects();
+}
+
+    balanceJointDef.enableMotor = true;
+    balanceJointDef.enableLimit = true;
+    balanceJointDef.motorSpeed  = -10; //-1260;
+    balanceJointDef.lowerAngle  = CC_DEGREES_TO_RADIANS(-30);
+    balanceJointDef.upperAngle  = CC_DEGREES_TO_RADIANS(30);
+    balanceJointDef.maxMotorTorque = 700;
+
+
+
+
+
+
+
+	//====================================================================
+	//init pivot body
+	//====================================================================
+
+	// add body for pivot
+    b2BodyDef pivotBodyDef;
+    pivotBodyDef.type = b2_staticBody;
+
+
+    pivotBodyDef.position.Set(pivot->getPosition().x / PTM_RATIO,
+        pivot->getPosition().y / PTM_RATIO);
+    pivotBodyDef.userData = pivot;
+
+
+    b2Body *pivotBody = m_world->CreateBody(&pivotBodyDef);
+    pivot->setB2Body(pivotBody);
+
+    // add fixture for pivot
+    b2PolygonShape pivotShape;
+
+    Size size = pivot->getContentSize();
+    pivotShape.SetAsBox(size.width /2 /  PTM_RATIO / 2, size.height /2/ PTM_RATIO / 2);
+
+    b2FixtureDef pivotShapeDef;
+    pivotShapeDef.shape = &pivotShape;
+    pivotBody->CreateFixture(&pivotShapeDef);
+    
+    
+    
+    
+
+
+
+
+
+
+
+
+
+bool GameScene::initFish()
+	{
+		//====================================================================
+		//Fish construction
+		//====================================================================
+	 	SpriteBatchNode* spritebatch = SpriteBatchNode::create("fish.png");
+		SpriteFrameCache* cache = SpriteFrameCache::sharedSpriteFrameCache();
+		cache->addSpriteFramesWithFile("fish.plist");
+
+		this->setFish( Sprite::createWithSpriteFrameName("fish13_01.png") );
+		spritebatch->addChild(fish);
+		this->addChild(spritebatch);
+
+		Vector<SpriteFrame*>  animFrames;
+	    char str[100] = {0};
+	    for(int i = 1; i < 11; i++)
+	    {
+	    sprintf(str, "fish13_%02d.png", i);
+	    SpriteFrame* frame = cache->spriteFrameByName( str );
+	    animFrames.pushBack(frame);
+	    }
+
+		Animation* animation = Animation::createWithSpriteFrames(animFrames, 0.025f);
+	    fish->runAction( RepeatForever::create( Animate::create(animation) ) );
+
+		fish->setPosition(Point(visibleSize.width / 6 + origin.x, visibleSize.height / 6 * 3+ origin.y));
+
+		auto f1 = MoveBy::create(5, Point(visibleSize.width / 6 * 4, 0));
+		auto f2 = MoveBy::create(5, Point(-visibleSize.width / 6 * 4, 0));
+		auto f_slides = Sequence::create(f1, f2, NULL);
+		auto f = RepeatForever::create(f_slides);
+
+		fish->runAction(f);
+
+		return fish;
+	}
+	
+	
+	
+	
+	bool GameScene::initWall()
+	{
+	this->setWal1( B2Sprite::create("line.png") );  // the wall in the left
+	wal1->setTag(wal_tag);
+	wal1->setAnchorPoint(ccp(0.5, 0.5));
+	wal1->setRotation(-90);
+	wal1->setPosition(Point(0 + origin.x, visibleSize.height / 2 + origin.y));
+
+	this->setWal2( B2Sprite::create("line.png") );  // the wall in the right
+	wal2->setTag(wal_tag);
+	wal2->setAnchorPoint(ccp(0.5, 0.5));
+	wal2->setRotation(-90);
+	wal2->setPosition(Point(visibleSize.width + origin.x, visibleSize.height/2 + origin.y));
+
+	this->setWal3( B2Sprite::create("line.png") );  // the wall in the middle
+	wal3->setTag(wal_tag);
+	wal3->setPosition(Point(visibleSize.width / 2 + origin.x, visibleSize.height / 6 + origin.y));
+
+//====================================================================
+// add walls into GameScene and Box2dHandler
+//====================================================================
+	this->addChild(wal1);
+	this->addChild(wal2);
+	this->addChild(wal3);
+
+	bh->addB2Sprite(wal1, 40);
+	bh->addB2Sprite(wal2, 40);
+	bh->addB2Sprite(wal3, 40);
+//====================================================================
+// construct actions for the wall in the middle
+//====================================================================
+	auto r1 = RotateBy::create(0.5, 10);
+	auto r2 = RotateBy::create(1, -20);
+	auto r3 = RotateBy::create(1, 20);
+	auto r4 = RotateBy::create(0.5, -10);
+
+	auto rotate = Sequence::create(r1, r2 ,r3, r4, NULL);
+	auto rf = RepeatForever::create(rotate);
+//====================================================================
+
+//====================================================================
+	wal3->runAction(rf);
+
+	return true;
+	}
+	
+	
+	
+	
+		CC_SYNTHESIZE_RETAIN(B2Sprite*, wal1, Wal1);
+	CC_SYNTHESIZE_RETAIN(B2Sprite*, wal2, Wal2);
+	CC_SYNTHESIZE_RETAIN(B2Sprite*, wal3, Wal3);
+	CC_SYNTHESIZE_RETAIN(Sprite*, fish, Fish);
+	
+	
+	
+		bool initWall();
+	bool initFish();
+	
+	
+	
+	
+	
+	
+	
+	bool GameScene::initBalance()
+{
+	//====================================================================
+	//init beam
+	//====================================================================
+
+	B2Sprite *beam = B2Sprite::create("line.png");
+	beam->setAnchorPoint(ccp(0.5, 0.5));
+	beam->setScale(0.5f,0.5f);
+	beam->setTag(beam_tag);
+	beam->setPosition( Point(visibleSize.width / 2 + origin.x, visibleSize.height / 6 + origin.y) );
+	this->addChild(beam);
+
+	//====================================================================
+	//init pivot
+	//====================================================================
+
+	B2Sprite *pivot = B2Sprite::create("circle.png");
+	pivot->setAnchorPoint(ccp(0.5, 0.5));
+	pivot->setScale(0.5f,0.5f);
+	pivot->setPosition( Point(visibleSize.width / 2 + origin.x, visibleSize.height / 6 + origin.y) );
+	this->addChild(pivot);
+
+	//====================================================================
+	//add body for beam in box2d world
+	//====================================================================
+
+	bh->addBalance(beam);
+
+	//====================================================================
+	//add test body in box2d world
+	//====================================================================
+    /*
+	B2Sprite *testSprite = B2Sprite::create("circle.png");
+	testSprite->setAnchorPoint(ccp(0.5, 0.5));
+	testSprite->setScale(0.5f,0.5f);
+	testSprite->setTag(obj_tag);
+	testSprite->setPosition( Point(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y) );
+	this->addChild(testSprite);
+
+	bh->testCombineBodies(testSprite);
+	*/
+}
+
+
+void Box2dHandler::addBalance(B2Sprite *beam)
+{
+	//====================================================================
+	//init beam body
+	//====================================================================
+
+	addBodyForSprite(beam);
+	addFixtureForSprite(beam, 40, 0.3f, 0);
+    b2Body *beamBody = beam->getB2Body();
+    beamBody->SetAngularDamping(1);
+	//====================================================================
+	//add Revolute Joint
+	//====================================================================
+
+    b2RevoluteJointDef balanceJointDef;
+    balanceJointDef.Initialize(beamBody, m_groundBody, beamBody->GetWorldCenter());
+    b2RevoluteJoint *m_balanceJoint = (b2RevoluteJoint*)m_world->CreateJoint(&balanceJointDef);
+}
+
+
+
+
+
+       for(b2Body* b = m_world->GetBodyList(); b; b = b->GetNext()) {
+           if (b->GetUserData() != NULL) {
+               B2Sprite* sprite = static_cast<B2Sprite*>(b->GetUserData());
+
+               if(sprite->getTag() == obj_tag) {
+                   b2Vec2 pos = b->GetPosition();
+                   float rotation = - b->GetAngle() / 0.01745329252f ;
+                   sprite->setPosition(ccp(pos.x * PTM_RATIO, pos.y * PTM_RATIO));
+                   sprite->setRotation(rotation);
+               }
+               else if (sprite->getTag() == pivot_tag){
+                   b2Vec2 b2Position = b2Vec2(sprite->getPosition().x / PTM_RATIO,
+                       sprite->getPosition().y / PTM_RATIO);
+                   float32 b2Angle = -CC_DEGREES_TO_RADIANS(sprite->getRotation());
+
+                   b->SetTransform(b2Position, b2Angle);
+               }
+           }
+       }
+       
+       
+       
+       
+ 	
+ 	
+ 	
+ 	
+ 	       void testCombineBodies(B2Sprite *sprite);
+ 	void Box2dHandler::testCombineBodies(B2Sprite *sprite)
+{
+	// create fixture 1
+    b2PolygonShape testShape_1;
+
+    testShape_1.SetAsBox(40.0f / PTM_RATIO / 2, 40.0f /  PTM_RATIO / 2);
+
+    b2FixtureDef testShapeDef_1;
+    testShapeDef_1.shape = &testShape_1;
+    testShapeDef_1.density = 20;
+    testShapeDef_1.friction = 0.3f;
+    testShapeDef_1.restitution = 0.5;
+
+	//====================================================================
+
+	//====================================================================
+
+    // create fixture 2
+    b2PolygonShape testShape_2;
+
+    testShape_2.SetAsBox(20.0f / PTM_RATIO / 2, 20.0f /  PTM_RATIO / 2, b2Vec2(1.0f, 0), 0.5);
+
+    b2FixtureDef testShapeDef_2;
+    testShapeDef_2.shape = &testShape_2;
+    testShapeDef_2.density = 10;
+    testShapeDef_2.friction = 0.3f;
+    testShapeDef_2.restitution = 0.3;
+
+	//====================================================================
+
+	//====================================================================
+
+    // creat Body, add 2 fixtures
+    b2BodyDef testBodyDef;
+    testBodyDef.type = b2_dynamicBody;
+
+    testBodyDef.position.Set( 270.0f / PTM_RATIO,480.0f / PTM_RATIO);  						// add body to the center of the screen.
+
+    b2Body *testBody = m_world->CreateBody(&testBodyDef);
+
+
+    testBody->CreateFixture(&testShapeDef_1);
+    testBody->CreateFixture(&testShapeDef_2);
+}
+
+
+
+
+
+
+       void removeB2Sprite(B2Sprite* sprite);
+void Box2dHandler::removeB2Sprite(B2Sprite* sprite)
+	{
+		m_world->DestroyBody( sprite->getB2Body() );
+		sprite->setB2Body(NULL);
+	}
+	
+	
+	            		   CCLOG("x:%f,y:%f", info->localPosition.x, info->localPosition.y);
+            		   CCLOG("x:%f,y:%f", pos.x, pos.y);
+            		   
+            		   
+            		   
+            		               		   b2Vec2 pos = b->GetWorldPoint(info->localPosition);
+            		   CCLOG("x:%f, y:%f", b->GetPosition().x, b->GetPosition().y);
+            		   CCLOG("x:%f, y:%f", info->localPosition.x, info->localPosition.y);
+            		   CCLOG("x:%f, y:%f", pos.x, pos.y);
+            		   
+            		   
+            		   
+            		   
+ void Box2dHandler::EndContact(b2Contact* contact)
+   {
+	   return;
+	   CCLOG("End Conctact Event!");
+       //MyContact myContact(contact->GetFixtureA(), contact->GetFixtureB());
+       //m_contacts.erase(myContact);
+   }
+   
+   
+       virtual void EndContact(b2Contact* contact);
+       
+       
+ 		pivotSprite->getTag();			//不知道为什么，不调用这个方程，程序就会出错，大概和Cocos的奇葩内存管理相关吧。
+	 	for (b2Fixture *f = pivotSprite->getB2Body()->GetFixtureList(); f; f = f->GetNext()) {
+	 		FixtureInfo *info = static_cast<FixtureInfo*>(f->GetUserData());
+	 		CC_SAFE_DELETE(info);
+	 	}
+	 	
+	 	
+	 	
+
+	 	
+	Label *font = Label::create("Height:    0", "Marker Felt", 30);
+	line->setPosition(Point(visibleSize.width / 2 + origin.x, 0 + origin.y));
+	font->setPosition(Point(visibleSize.width / 6  * 5 + origin.x, 20 + origin.y));
+
+	Marker *marker = new Marker(line, font);
+	this->addChild(marker);
+
+	bh->setMarker(marker);
+
+	return true;
+	
+	
+	
+	
+	// 新建Body
+	FixtureInfo *old = static_cast<FixtureInfo*>(latestFixture->GetUserData())
+	B2Sprite *sprite = static_cast<B2Sprite*>((*it)->GetUserData());
+
+	// 克隆Fixture
+	addBodyForSprite(sprite);
+	b2Body *newBody = sprite->getB2Body();
+	b2Body *oldBody = latestFixture->GetBody();
+
+	b2PolygonShape *oldShape = (b2PolygonShape*)(latestFixture->GetShape());
+	int32 m_count = oldShape->GetVertexCount();
+	b2Vec2 m_vertices[8];
+
+	for (int i = 0; i < m_count; i++) {  //得到obj各个顶点的世界坐标
+		m_vertices[i] = newBody->GetLocalPoint( oldBody->GetWorldPoint(oldShape->GetVertex(i)) );
+	}
+    b2PolygonShape newShape;
+    newShape.Set( m_vertices, m_count);
+
+	
+
+    b2FixtureDef newShapeDef;
+    newShapeDef.shape = &newShape;
+    newShapeDef.density =latestFixture->GetDensity();
+    newShapeDef.friction = latestFixture->GetFriction();
+    newShapeDef.restitution = latestFixture->GetRestitution();
+
+    FixtureInfo *info = new FixtureInfo();
+    info->localPosition = pivotBody->GetLocalPoint( objBody->GetPosition() );
+    info->objAngle = objBody->GetAngle();
+    info->pivotAngle = pivotBody->GetAngle();
+    info->userData = objBody->GetUserData();
+    newShapeDef.userData = info;    //记录碰撞时的各变量的初始值
+    
+    objSprite->setB2Body(pivotBody);
+    m_world->DestroyBody(objBody);
+
+    latestFixture = pivotBody->CreateFixture(&newShapeDef);
+
+
+	// 销毁之前的pivotBody，回收内存资源
+	
+	
+	
+			   b2Fixture *f;
+		   if (contact->GetFixtureA()->GetBody()->GetUserData() == NULL)
+			   f = contact->GetFixtureB();
+		   else
+			   f = contact->GetFixtureA();
+		   if (f == pivotFixture)
+			   return;
+
+
+
+  	// 2.传递给GameLayer碰撞物体最高顶点的高度，让其判断是否需要移动Layer
+  	int32 m_count = objShape->GetVertexCount();
+  	b2Vec2 m_vertices[8];
+  	bool moveLayer = false;
+
+  	for (int i = 0; i < m_count; i++) {  //得到obj各个顶点的世界坐标
+  		m_vertices[i] = objBody->GetWorldPoint(objShape->GetVertex(i));
+  	}
+
+  	if ((objBody->GetPosition() ).y >= m_marker->getHeight()) { // 如果新加入的obj高于最高点，则找出obj的最高顶点，传递给GameLayer
+  		float highest = 0;
+  		for (int i = 0; i < m_count; i++)
+  		{
+  			if (m_vertices[i].y > highest)
+  				highest = m_vertices[i].y;
+  		}
+  		moveLayer = m_layer->onMoveScreen( highest * PTM_RATIO);
+  	}
+    else
+    {
+  		m_layer->scheduleOnce(schedule_selector(GameLayer::addObj), 0.5f);
+  	}
+		
