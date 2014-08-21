@@ -9,7 +9,7 @@
 #include "EndLayer.h"
 #include "GameScene.h"
 #include "GameLayer.h"
-#include <String>
+#include <string>
 #include <stdio.h>
 
 USING_NS_CC;

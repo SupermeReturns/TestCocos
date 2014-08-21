@@ -36,17 +36,11 @@ public:
 
     /// 在Box2d世界中添加一个的新的物体
     /// @param sprite 需要添加的B2Sprite
-    /// @param density 添加物体的密度
-    /// @param friction 物体表面的摩擦力系数
-    /// @param restitution 物体的弹性系数
-    void addNewB2Sprite(B2Sprite* sprite, double density=10.0f, float friction=0.3f, float restitution=0.0f);
+    void addNewB2Sprite(B2Sprite* sprite);
 
     /// 在物理世界中加入底座，并创造一个Joint
     /// @param sprite 需要添加的B2Sprite
-    /// @param density 添加物体的密度
-    /// @param friction 物体表面的摩擦力系数
-    /// @param restitution 物体的弹性系数
-    void addPivot(B2Sprite* sprite, double density=10.0f,float friction=0.3f, float restitution=0.0f);
+    void addPivot(B2Sprite* sprite);
 
     /// 检测游戏是否结束
     /// @param 如果游戏结束，返回true，否则返回false
@@ -70,8 +64,9 @@ public:
     bool isObjFalling();
 
 private:
-    /// 创建的物理世界的指针
-    b2World* m_world;
+    /// 物理世界的“物体” ,定义了private变量m_world的访问器方法
+    /// getWorld()， setWorld()用于访问sprite的Box2d刚体
+    CC_SYNTHESIZE(b2World*, m_world, World);
 
     /// 世界“界限”的指针
     b2Body* m_groundBody;

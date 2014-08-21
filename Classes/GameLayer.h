@@ -49,7 +49,7 @@ private:
 	Box2dHandler *bh;
 
 	/// 当前正在悬浮的平衡木
-	B2Sprite *curBrick;
+	B2Sprite *curObj;
 
 	/// 屏幕大小信息
 	Point origin ;
@@ -64,10 +64,10 @@ private:
 	void initGadgetPanel();
 
 	/// 手动添加新的物块到gamePanel中，并制定移动的方式
-	void addNewBrick();
+	void addNewObj();
 
 	///  自动在一定时间之后添加新的物体到gamePanel(手动添加新的物体请调用addNewBrick())
-	void addNewBrickAfterSomeTime(float dt);
+	void addNewObjAfterSomeTime(float dt);
 
 	///  当系统检测到触摸事件，会自动调用该方法
 	bool onTouchBegan(cocos2d::Touch *touch, cocos2d::Event *event);

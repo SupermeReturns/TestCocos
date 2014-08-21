@@ -477,3 +477,20 @@ void Box2dHandler::removeB2Sprite(B2Sprite* sprite)
   		m_layer->scheduleOnce(schedule_selector(GameLayer::addObj), 0.5f);
   	}
 		
+
+
+
+
+
+
+void B2Sprite::setPosition (const Point &position)
+{
+	Sprite::setPostion(position);
+	m_b2Body->SetTransform(b2Vec2(position.x / PTM_RATIO, position.y / PTM_RATIO), m_b2Body->GetAngle());
+}
+
+
+
+	/// 设置B2Sprite的位置同时同步body在物理世界的位置
+	/// @param Sprite位置
+	virtual void setPosition (const Point &position)；

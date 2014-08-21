@@ -6,31 +6,48 @@
  */
 
 
+#include "Use_Box/ExtendedB2Sprite.h"
 #include "EndLayer.h"
 #include "GameLayer.h"
+#include <time.h>
+#include <stdlib.h>
 
 USING_NS_CC;
 
 
 bool GameLayer::onTouchBegan(cocos2d::Touch *touch, cocos2d::Event *event) 
 {
-	if (curBrick == NULL)
+	if (curObj == NULL)
 		return false;
-	curBrick->stopAllActions();
-	bh->addNewB2Sprite(curBrick, 1);
-	this->curBrick = NULL;
+	curObj->stopAllActions();
+	bh->addNewB2Sprite(curObj);
+	this->curObj = NULL;
 
 	return true;
 }
 
-void GameLayer::addNewBrick() 
+void GameLayer::addNewObj() 
 {
-	// 设置物块的标签，大小，位置
-	this->curBrick = B2Sprite::create("circle.png");
-	curBrick->setTag(obj_tag);
-	curBrick->setScale(0.25f,0.25f);
-	curBrick->setPosition(Point(visibleSize.width / 6, visibleSize.height / 6 * 5 - this->gamePanel->getPositionY()));
-	this->gamePanel->addChild(curBrick);
+
+	// 根据随机数生成B2Sprite, 设置物块的标签，大小，位置
+	srand((int)time(0));
+	int r = rand() % 3;
+	switch (r) 
+	{
+		case 0:
+			this->curObj = IronSprite::create();	
+			break;
+		case 1:
+			this->curObj = CuttonSprite::create();
+			break;
+		case 2:
+			this->curObj = BrickSprite::create();
+			break;
+	}
+
+	curObj->setTag(OBJ_TAG);
+	curObj->setPosition(Point(visibleSize.width / 6, visibleSize.height / 6 * 5 - this->gamePanel->getPositionY()));
+	this->gamePanel->addChild(curObj);
 
 	// 设置物块的动作
 	auto a1 = MoveBy::create(1.5, Point(visibleSize.width / 6 * 4, 0));
@@ -38,12 +55,12 @@ void GameLayer::addNewBrick()
 	auto slides = Sequence::create(a1, a2, NULL);
 	auto sf = RepeatForever::create(slides);
 
-	curBrick->runAction(sf);
+	curObj->runAction(sf);
 }
 
-void GameLayer::addNewBrickAfterSomeTime(float dt)
+void GameLayer::addNewObjAfterSomeTime(float dt)
 {
-	this->addNewBrick();
+	this->addNewObj();
 }
 
 bool GameLayer::init() 
@@ -76,15 +93,14 @@ bool GameLayer::init()
     this->gamePanel->addChild(bh);
 
 	// 在gamePanel中添加底座Pivot
-	B2Sprite *pivot = B2Sprite::create("circle.png");
-	pivot->setTag(pivot_tag);
-	pivot->setScale(0.5f,0.5f);
+	B2Sprite *pivot = BrickSprite::create();
+	pivot->setTag(PIVOT_TAG);
 	pivot->setPosition( Point(visibleSize.width / 2 + origin.x, visibleSize.height / 6 * 2.5 + origin.y) );
 	this->gamePanel->addChild(pivot);
-	bh->addPivot(pivot, 10);
+	bh->addPivot(pivot);
 
 	// 添加悬浮的平衡木
-    this->addNewBrick();
+    this->addNewObj();
 
     // 设置触摸事件监听
     auto listener = EventListenerTouchOneByOne::create();
@@ -162,13 +178,13 @@ void GameLayer::update(float delta)
 	this->board->update(this->bh->getPivotAngle());
 
 	// 检测是否需要添加新的物块
-	if (this->curBrick == NULL)
+	if (this->curObj == NULL)
 	{
 		if (!this->bh->isObjFalling())
 		{
 			if ( !this->isLayerMoving )
 			{
-				this->addNewBrick();
+				this->addNewObj();
 			}
 		}
 	}

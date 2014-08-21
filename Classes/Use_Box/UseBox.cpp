@@ -6,7 +6,7 @@
  */
 
 #include "UseBox.h"
-#include <String>
+#include <string>
 #include <vector>
 #include <stdio.h>
 
@@ -93,34 +93,10 @@ bool Box2dHandler::init()
    return true;
 }
 
-void Box2dHandler::addNewB2Sprite(B2Sprite* sprite, double density, float friction, float restitution)
+void Box2dHandler::addNewB2Sprite(B2Sprite* sprite)
 {
-  // add body to B2Sprite
-  b2BodyDef spriteBodyDef;
-  spriteBodyDef.type = b2_dynamicBody;
-
-  spriteBodyDef.position.Set(sprite->getPosition().x / PTM_RATIO,
-     sprite->getPosition().y / PTM_RATIO);
-  spriteBodyDef.userData = sprite;
-
-  b2Body *spriteBody = m_world->CreateBody(&spriteBodyDef);
-  sprite->setB2Body(spriteBody);
-
-
-  // add fixture to B2Sprite 
-  b2PolygonShape spriteShape;
-
-  Size size = sprite->getContentSize();
-  float scale = sprite->getScale();
-  spriteShape.SetAsBox(size.width * scale / PTM_RATIO / 2, size.height * scale /  PTM_RATIO / 2);
-
-  b2FixtureDef spriteShapeDef;
-  spriteShapeDef.shape = &spriteShape;
-  spriteShapeDef.density =density;
-  spriteShapeDef.friction = friction;
-  spriteShapeDef.restitution = restitution;
-
-  spriteBody->CreateFixture(&spriteShapeDef);
+  // call b2Sprite's initB2Body method
+  sprite->initB2Body(m_world);
 
   // the new obj is still falling
   isObjFalling_ = true;
@@ -134,15 +110,15 @@ void Box2dHandler::update(float dt)
            // 条件成立可以过滤掉groundBox的Box
            B2Sprite* sprite = static_cast<B2Sprite*>(b->GetUserData());
 
-           if(sprite->getTag() == obj_tag) {
-               // 如果为obj_tag,只需要更新该body对应的sprite即可
+           if(sprite->getTag() == OBJ_TAG) {
+               // 如果为OBJ_TAG,只需要更新该body对应的sprite即可
                b2Vec2 pos = b->GetPosition();
                float rotation = - b->GetAngle() / 0.01745329252f ;
                sprite->setPosition(ccp(pos.x * PTM_RATIO, pos.y * PTM_RATIO));
                sprite->setRotation(rotation);
            }
-           else if (sprite->getTag() == pivot_tag){
-             // 如果为pivot_tag,需要更新该pivot的每个fixture对应的B2Sprite
+           else if (sprite->getTag() == PIVOT_TAG){
+             // 如果为PIVOT_TAG,需要更新该pivot的每个fixture对应的B2Sprite
         	   for (b2Fixture *f = b->GetFixtureList(); f; f = f->GetNext()) {
         		   FixtureInfo* info = static_cast<FixtureInfo*>(f->GetUserData());
         		   B2Sprite* part = static_cast<B2Sprite*>(info->userData);
@@ -186,8 +162,8 @@ void Box2dHandler::BeginContact(b2Contact* contact)
    int ta = spa->getTag();
    int tb = spb->getTag();
 
-   if( (ta == pivot_tag) || (tb == pivot_tag) ) {
-     if (ta != pivot_tag)
+   if( (ta == PIVOT_TAG) || (tb == PIVOT_TAG) ) {
+     if (ta != PIVOT_TAG)
   	   std::swap(spa, spb);
      m_contacts.insert(spb->getB2Body());
    }
@@ -252,9 +228,9 @@ void Box2dHandler::dealCollisions()
 	m_contacts.clear();
 }
 
-void Box2dHandler::addPivot(B2Sprite* sprite, double density, float friction, float restitution) 
+void Box2dHandler::addPivot(B2Sprite* sprite) 
 {
-  this->addNewB2Sprite(sprite, density, friction, restitution);
+  this->addNewB2Sprite(sprite);
   pivotFixture = sprite->getB2Body()->GetFixtureList();
 
   // 记录碰撞时的各变量的初始值
@@ -268,7 +244,7 @@ void Box2dHandler::addPivot(B2Sprite* sprite, double density, float friction, fl
   // 为Body添加Joint
   b2RevoluteJointDef jointDef;
   jointDef.Initialize(pivotFixture->GetBody(), m_groundBody, pivotFixture->GetBody()->GetWorldCenter());
-  jointDef.maxMotorTorque = 10.0f;
+  jointDef.maxMotorTorque = 50.0f;
   jointDef.motorSpeed = 0.0f;
   jointDef.enableMotor = true;
   jointDef.collideConnected = true;
@@ -303,7 +279,7 @@ void Box2dHandler::recycle(float heightOfGamePanel)
   // 标记新的pivot，使其能够再次辨识
   fi = static_cast<FixtureInfo*>(pivotFixture->GetUserData());
   sprite = static_cast<B2Sprite*>(fi->userData);
-  sprite->setTag(pivot_tag);
+  sprite->setTag(PIVOT_TAG);
   pivotFixture->GetBody()->SetUserData(sprite);
 
   // 移除掉原来的joint， 重新调整groundbox的位置，使其伴随pivotFixture上升
