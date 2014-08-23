@@ -9,7 +9,6 @@
 #define ENDLAYER_H_
 
 #include "cocos2d.h"
-#include "GameConfig.h"
 
 class EndLayer: public cocos2d::Layer {
 

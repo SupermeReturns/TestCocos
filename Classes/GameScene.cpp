@@ -1,6 +1,6 @@
-#include "cocos2d.h"
 #include "GameScene.h"
 #include "GameLayer.h"
+#include "cocos2d.h"
 
 USING_NS_CC;
 

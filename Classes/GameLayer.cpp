@@ -5,12 +5,11 @@
  *      Author: SunDongliang
  */
 
-
-#include "Use_Box/ExtendedB2Sprite.h"
-#include "EndLayer.h"
 #include "GameLayer.h"
 #include <time.h>
 #include <stdlib.h>
+#include "Use_Box/ExtendedB2Sprite.h"
+#include "EndLayer.h"
 
 USING_NS_CC;
 
@@ -29,23 +28,34 @@ bool GameLayer::onTouchBegan(cocos2d::Touch *touch, cocos2d::Event *event)
 void GameLayer::addNewObj() 
 {
 
-	// 根据随机数生成B2Sprite, 设置物块的标签，大小，位置
+	// 根据比例产生随机数，从而决定下一个物体的类型, 设置物块的标签，大小，位置
 	srand((int)time(0));
-	int r = rand() % 3;
+	int r = rand() % 100;
+	if (r < kCUTTON_POSSIBILITY)
+	{
+		this->curObj = CuttonSprite::create();			
+	} else if (r < kCUTTON_POSSIBILITY + kBRICK_POSSIBILITY) 
+	{
+		this->curObj = BrickSprite::create();			
+	} else
+	{
+		this->curObj = IronSprite::create();
+	}
+	/*
 	switch (r) 
 	{
-		case 0:
-			this->curObj = IronSprite::create();	
+		case 0,1,2,3,4,5,6:
+			this->curObj = CuttonSprite::create();	
 			break;
-		case 1:
-			this->curObj = CuttonSprite::create();
+		case 7,8:
+			this->curObj = IronSprite::create();
 			break;
-		case 2:
+		case 9:
 			this->curObj = BrickSprite::create();
 			break;
 	}
-
-	curObj->setTag(OBJ_TAG);
+	*/
+	curObj->setTag(kOBJ_TAG);
 	curObj->setPosition(Point(visibleSize.width / 6, visibleSize.height / 6 * 5 - this->gamePanel->getPositionY()));
 	this->gamePanel->addChild(curObj);
 
@@ -83,8 +93,11 @@ bool GameLayer::init()
 	// 初始化gadgetPanel，并加入GameLayer中
 	this->gadgetPanel = Layer::create();
 	this->addChild(gadgetPanel);
-	this->board = Dashboard::create(0, visibleSize);
+
+	this->board = Dashboard::create();
+	board->setPosition(Point(visibleSize.width / 2, visibleSize.height));
 	gadgetPanel->addChild(board);
+
     // 每次游戏循环更新都会调用update函数
     this->scheduleUpdate();
 
@@ -94,8 +107,8 @@ bool GameLayer::init()
 
 	// 在gamePanel中添加底座Pivot
 	B2Sprite *pivot = BrickSprite::create();
-	pivot->setTag(PIVOT_TAG);
-	pivot->setPosition( Point(visibleSize.width / 2 + origin.x, visibleSize.height / 6 * 2.5 + origin.y) );
+	pivot->setTag(kPIVOT_TAG);
+	pivot->setPosition( Point(visibleSize.width / 2 + origin.x, visibleSize.height / 6 + origin.y) );
 	this->gamePanel->addChild(pivot);
 	bh->addPivot(pivot);
 
@@ -118,19 +131,6 @@ void GameLayer::cleanScreen()
 
 	// 回收内存空间
 	bh->recycle(this->gamePanel->getPositionY());
-}
-
-void GameLayer::initGadgetPanel() 
-{
-	// 初始化gadgetPanel，并加入GameLayer中
-	this->gadgetPanel = Layer::create();
-	this->addChild(gadgetPanel);
-
-	// 放置Marker，Dashboard等小部件
-	this->marker = Marker::create(visibleSize);
-	this->board = Dashboard::create(0, visibleSize);
-	gadgetPanel->addChild(marker);
-	gadgetPanel->addChild(board);
 }
 
 void GameLayer::update(float delta)

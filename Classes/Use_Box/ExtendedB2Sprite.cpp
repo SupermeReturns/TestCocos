@@ -3,9 +3,9 @@
 IronSprite* IronSprite::create()
 {
 	IronSprite *s = new IronSprite();
-	if (s && s->init(IRON_PIC_PATH))
+	if (s && s->init(kIRON_PIC_PATH))
 	{
-		s->setScale(IRON_SCALE, IRON_SCALE);
+		s->setScale(kIRON_SCALE, kIRON_SCALE);
 		s->autorelease();
 		return s;
 	}
@@ -15,7 +15,7 @@ IronSprite* IronSprite::create()
 
 void IronSprite::initB2Body(b2World* world)
 {
-	B2Sprite::initB2Body(world, IRON_DENSITY, IRON_FRICTION, IRON_RESTITUTION);
+	B2Sprite::initB2BodyWithParams(world, kIRON_DENSITY, kIRON_FRICTION, kIRON_RESTITUTION);
 }
 
 
@@ -24,9 +24,9 @@ void IronSprite::initB2Body(b2World* world)
 CuttonSprite* CuttonSprite::create()
 {
 	CuttonSprite *s = new CuttonSprite();
-	if (s && s->init(CUTTON_PIC_PATH))
+	if (s && s->init(kCUTTON_PIC_PATH))
 	{
-		s->setScale(CUTTON_SCALE, CUTTON_SCALE);
+		s->setScale(kCUTTON_SCALE, kCUTTON_SCALE);
 		s->autorelease();
 		return s;
 	}
@@ -36,9 +36,9 @@ CuttonSprite* CuttonSprite::create()
 
 void CuttonSprite::initB2Body(b2World* world)
 {
-	B2Sprite::initB2Body(world, CUTTON_DENSITY, CUTTON_FRICTION, CUTTON_RESTITUTION);	
+	B2Sprite::initB2BodyWithParams(world, kCUTTON_DENSITY, kCUTTON_FRICTION, kCUTTON_RESTITUTION);	
 }
-
+ 
 
 
 
@@ -46,9 +46,9 @@ void CuttonSprite::initB2Body(b2World* world)
 BrickSprite* BrickSprite::create()
 {
 	BrickSprite *s = new BrickSprite();
-	if (s && s->init(BRICK_PIC_PATH))
+	if (s && s->init(kBRICK_PIC_PATH))
 	{
-		s->setScale(BRICK_SCALE, BRICK_SCALE);
+		s->setScale(kBRICK_SCALE, kBRICK_SCALE);
 		s->autorelease();
 		return s;
 	}
@@ -58,5 +58,5 @@ BrickSprite* BrickSprite::create()
 
 void BrickSprite::initB2Body(b2World* world)
 {
-	return B2Sprite::initB2Body(world, BRICK_DENSITY, BRICK_FRICTION, BRICK_RESTITUTION);
+	return B2Sprite::initB2BodyWithParams(world, kBRICK_DENSITY, kBRICK_FRICTION, kBRICK_RESTITUTION);
 }

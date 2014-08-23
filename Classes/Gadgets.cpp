@@ -5,8 +5,8 @@
  *      Author: SunDongliang
  */
 
-#include <String>
 #include "Gadgets.h"
+#include <String>
 
 USING_NS_CC;
 
@@ -71,9 +71,9 @@ void Marker::updateFont() {
 
 
 
-Dashboard* Dashboard::create(float angle, Size visibleSize) {
+Dashboard* Dashboard::create() {
 	Dashboard *pRet = new Dashboard();
-	if (pRet && pRet->init(angle, visibleSize)) {
+	if (pRet && pRet->init()) {
 		pRet->autorelease();
 		return pRet;
 	} else {
@@ -83,22 +83,29 @@ Dashboard* Dashboard::create(float angle, Size visibleSize) {
 	}
 }
 
-bool Dashboard::init(float angle, Size visibleSize) {
+bool Dashboard::init() {
 	if (!Layer::init()) {
 		return false;
 	}
-	m_panel = Sprite::create("panel.jpg");
-	m_pointer = Sprite::create("pointer.png");
-
-	m_panel->setPosition(Point(visibleSize.width / 2, visibleSize.height / 6 * 5));
-	m_pointer->setPosition(Point(visibleSize.width / 2, visibleSize.height / 6 * 5));
+	m_panel = Sprite::create(kPANEL_PATH);
+	m_pointer = Sprite::create(kPOINTER_PATH);
 
 	m_panel->setScale(0.5);
 	m_pointer->setScale(0.5);
 
-    m_pointer->setRotation(angle);
-
+	// add panel in the right position
+	m_panel->setAnchorPoint(Point(0.5, 1.0));
 	addChild(m_panel);
+
+  	Size size = m_pointer->getContentSize();
+  	float scale = m_pointer->getScale();
+
+  	// add pointer in the right position
+    m_pointer->setAnchorPoint(Point(0.5, 0.4));
+    m_pointer->setPosition(Point(0, -size.height * scale * 0.6));
+
+    m_pointer->setRotation(0);
+
 	addChild(m_pointer);
 }
 

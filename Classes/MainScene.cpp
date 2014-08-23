@@ -2,7 +2,6 @@
 #include "SettingScene.h"
 #include "GameScene.h"
 #include "HighscoresScene.h"
-#include "SimpleAudioEngine.h"
 
 USING_NS_CC;
 

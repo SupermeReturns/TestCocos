@@ -46,7 +46,7 @@ bool Box2dHandler::init()
    return false;
  }
   b2Vec2 gravity;
-  gravity.Set(0.0f, -10.0f);	//垂直向下
+  gravity.Set(0.0f, kGRAVITY);	//垂直向下
 
   m_world = new b2World(gravity);
   m_world->SetAllowSleeping(false);
@@ -55,7 +55,7 @@ bool Box2dHandler::init()
   //====================================================================
   // setup DebugDraw
   //====================================================================
-  m_debugDraw = new GLESDebugDraw( PTM_RATIO );
+  m_debugDraw = new GLESDebugDraw( kPTM_RATIO );
   m_world->SetDebugDraw(m_debugDraw);
   uint32 flags = 0;
   flags += b2Draw::e_shapeBit;
@@ -79,15 +79,15 @@ bool Box2dHandler::init()
 
   b2EdgeShape groundBox;
   // bottom
-  groundBox.Set(b2Vec2(0,0), b2Vec2(width/PTM_RATIO, 0));
+  groundBox.Set(b2Vec2(0,0), b2Vec2(width/kPTM_RATIO, 0));
   m_groundBody->CreateFixture(&groundBox, 0);
 
   // left
-  groundBox.Set(b2Vec2(0,height/PTM_RATIO), b2Vec2(0,0));
+  groundBox.Set(b2Vec2(0,height/kPTM_RATIO), b2Vec2(0,0));
   m_groundBody->CreateFixture(&groundBox, 0);
 
   // right
-  groundBox.Set(b2Vec2(width/PTM_RATIO, height/PTM_RATIO), b2Vec2(width/PTM_RATIO,0));
+  groundBox.Set(b2Vec2(width/kPTM_RATIO, height/kPTM_RATIO), b2Vec2(width/kPTM_RATIO,0));
   m_groundBody->CreateFixture(&groundBox, 0);
 
    return true;
@@ -110,27 +110,27 @@ void Box2dHandler::update(float dt)
            // 条件成立可以过滤掉groundBox的Box
            B2Sprite* sprite = static_cast<B2Sprite*>(b->GetUserData());
 
-           if(sprite->getTag() == OBJ_TAG) {
-               // 如果为OBJ_TAG,只需要更新该body对应的sprite即可
+           if(sprite->getTag() == kOBJ_TAG) {
+               // 如果为kOBJ_TAG,只需要更新该body对应的sprite即可
                b2Vec2 pos = b->GetPosition();
-               float rotation = - b->GetAngle() / 0.01745329252f ;
-               sprite->setPosition(ccp(pos.x * PTM_RATIO, pos.y * PTM_RATIO));
+               float rotation = - b->GetAngle() /  kONE_DIV_PAI;
+               sprite->setPosition(ccp(pos.x * kPTM_RATIO, pos.y * kPTM_RATIO));
                sprite->setRotation(rotation);
            }
-           else if (sprite->getTag() == PIVOT_TAG){
-             // 如果为PIVOT_TAG,需要更新该pivot的每个fixture对应的B2Sprite
+           else if (sprite->getTag() == kPIVOT_TAG){
+             // 如果为kPIVOT_TAG,需要更新该pivot的每个fixture对应的B2Sprite
         	   for (b2Fixture *f = b->GetFixtureList(); f; f = f->GetNext()) {
         		   FixtureInfo* info = static_cast<FixtureInfo*>(f->GetUserData());
         		   B2Sprite* part = static_cast<B2Sprite*>(info->userData);
         		   b2Vec2 pos = b->GetWorldPoint(info->localPosition);
-        		   float rotation = -(b->GetAngle() - info->pivotAngle + info->objAngle)/ 0.01745329252f;
-                   part->setPosition(ccp(pos.x * PTM_RATIO, pos.y * PTM_RATIO));
+        		   float rotation = -(b->GetAngle() - info->pivotAngle + info->objAngle)/ kONE_DIV_PAI;
+                   part->setPosition(ccp(pos.x * kPTM_RATIO, pos.y * kPTM_RATIO));
                    part->setRotation(rotation);
         	   }
            }
        }
    }
-   m_world->Step(dt, 8, 8);
+   m_world->Step(dt, kVELOCITY_ITERATIONS, kPOSITION_ITERATIONS);
    dealCollisions();
 }
 
@@ -162,8 +162,8 @@ void Box2dHandler::BeginContact(b2Contact* contact)
    int ta = spa->getTag();
    int tb = spb->getTag();
 
-   if( (ta == PIVOT_TAG) || (tb == PIVOT_TAG) ) {
-     if (ta != PIVOT_TAG)
+   if( (ta == kPIVOT_TAG) || (tb == kPIVOT_TAG) ) {
+     if (ta != kPIVOT_TAG)
   	   std::swap(spa, spb);
      m_contacts.insert(spb->getB2Body());
    }
@@ -241,10 +241,10 @@ void Box2dHandler::addPivot(B2Sprite* sprite)
   info->userData = sprite;
   pivotFixture->SetUserData(info);
 
-  // 为Body添加Joint
+  // 为Body添加Joint,模拟摩擦力
   b2RevoluteJointDef jointDef;
   jointDef.Initialize(pivotFixture->GetBody(), m_groundBody, pivotFixture->GetBody()->GetWorldCenter());
-  jointDef.maxMotorTorque = 50.0f;
+  jointDef.maxMotorTorque = kMAX_MOTOR_TORQUE;
   jointDef.motorSpeed = 0.0f;
   jointDef.enableMotor = true;
   jointDef.collideConnected = true;
@@ -279,18 +279,18 @@ void Box2dHandler::recycle(float heightOfGamePanel)
   // 标记新的pivot，使其能够再次辨识
   fi = static_cast<FixtureInfo*>(pivotFixture->GetUserData());
   sprite = static_cast<B2Sprite*>(fi->userData);
-  sprite->setTag(PIVOT_TAG);
+  sprite->setTag(kPIVOT_TAG);
   pivotFixture->GetBody()->SetUserData(sprite);
 
   // 移除掉原来的joint， 重新调整groundbox的位置，使其伴随pivotFixture上升
   m_world->DestroyJoint(m_joint);
-  b2Vec2 b2Position = b2Vec2(0, (-20-heightOfGamePanel)/PTM_RATIO );
+  b2Vec2 b2Position = b2Vec2(0, (-kGROUNDBOX_PADDLE-heightOfGamePanel)/kPTM_RATIO );
   m_groundBody->SetTransform(b2Position, 0);
 
   // Body加入新的RevoluteJoint
   b2RevoluteJointDef jointDef;
   jointDef.Initialize(pivotFixture->GetBody(), m_groundBody, pivotFixture->GetBody()->GetWorldCenter());
-  jointDef.maxMotorTorque = 10.0f;
+  jointDef.maxMotorTorque = kMAX_MOTOR_TORQUE;
   jointDef.motorSpeed = 0.0f;
   jointDef.enableMotor = true;
   jointDef.collideConnected = true;
@@ -304,12 +304,12 @@ bool Box2dHandler::isGameEnded()
 
 float Box2dHandler::getCurHeight()
 {
-  return this->curHeight * PTM_RATIO;
+  return this->curHeight * kPTM_RATIO;
 }
 
 float Box2dHandler::getPivotAngle()
 {
-  return (m_joint->GetJointAngle() / 0.01745329252f);
+  return (m_joint->GetJointAngle() / kONE_DIV_PAI);
 }
 
 bool Box2dHandler::isObjFalling()

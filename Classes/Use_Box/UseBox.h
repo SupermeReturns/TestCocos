@@ -1,14 +1,14 @@
 #ifndef __USE_BOX_H__
 #define __USE_BOX_H__
 
-#include "cocos2d.h"
-#include "Box2D/Box2D.h"
-#include "B2Sprite.h"
-#include "../GameConfig.h"
-#include "GLES-Render.h"
 #include <string>
 #include <set>
 #include <utility>
+#include "cocos2d.h"
+#include "Box2D/Box2D.h"
+#include "B2Sprite.h"
+#include "GameConfig.h"
+#include "GLES-Render.h"
 
 USING_NS_CC;
 

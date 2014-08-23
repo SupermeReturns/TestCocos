@@ -8,10 +8,9 @@
 #ifndef GADGETS_H_
 #define GADGETS_H_
 
-
+#include "GameConfig.h"
 #include "cocos2d.h"
 #include "Box2D/Box2D.h"
-#include "GameConfig.h"
 
 USING_NS_CC;
 
@@ -34,17 +33,13 @@ private:
 	Sprite* m_panel;
 	float angle;
 public:
-	/// create a Dashboard instance and initiate it
-	/// @param angle the initial angle of the pointer
-	/// @param visibleSize size of the layer that it is put in
+	/// create a Dashboard instance and initiate it,it starts with pointer in 90 degree upstraight
 	/// @return an Dashboard instance that has been autoreleased
-	static Dashboard* create(float angle, Size visibleSize);
+	static Dashboard* create();
 
-	/// initiate an Dashboard instance
-	/// @param angle the initial angle of the pointer
-	/// @param visibleSize size of the layer that it is put in
+	/// initiate an Dashboard instance,it starts with pointer in 90 degree upstraight
 	/// @return return ture if initiate succesful,false otherwise
-	bool init(float angle, Size visibleSize);
+	bool init();
 
 	/// update the dashboard(It means update the angle of the pointer)
 	/// @param the new angle of pointer to move to

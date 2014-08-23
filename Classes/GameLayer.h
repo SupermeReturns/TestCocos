@@ -8,10 +8,10 @@
 #ifndef GAMELAYER_H_
 #define GAMELAYER_H_
 
-#include "cocos2d.h"
-#include "Use_Box/UseBox.h"
 #include "GameConfig.h"
 #include "Gadgets.h"
+#include "Use_Box/UseBox.h"
+#include "cocos2d.h"
 
 USING_NS_CC;
 
@@ -59,9 +59,6 @@ private:
 	/// @warning 只能在移动Layer完成之后才能调用
 	/// @return 如果需要移动Layer，则返回true，否则false
 	void cleanScreen();
-
-	/// 初始化gadgetPanel，并向其中添加Marker，Dashboard等小部件
-	void initGadgetPanel();
 
 	/// 手动添加新的物块到gamePanel中，并制定移动的方式
 	void addNewObj();

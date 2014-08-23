@@ -2,8 +2,8 @@
 #define __EXTENDEDB2SPRITE_H__
 
 #include "B2Sprite.h"
-#include "../GameConfig.h"
 #include "Box2D/Box2D.h"
+#include "GameConfig.h"
 
 /// IronSprite 具有铁一样的质量
 class IronSprite : public B2Sprite
