@@ -63,7 +63,7 @@ void EndLayer::initWithHeight(float height) {
 	if (isBreak) {
 		Label *font1 = Label::create("Congratulations!", "Marker Felt", 60);
 		Label *font2 = Label::create("A New Record :", "Marker Felt", 60);
-		char str[10];
+		char str[30];
 		sprintf(str,"%.0f",height);
 		Label *font3 = Label::create(str, "Marker Felt", 60);
 

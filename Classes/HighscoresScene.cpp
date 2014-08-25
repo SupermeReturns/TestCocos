@@ -1,5 +1,4 @@
 #include "HighscoresScene.h"
-#include "cocos2d.h"
 
 USING_NS_CC;
 
@@ -13,6 +12,7 @@ bool ResultPanel::init() {
     Point origin = Director::getInstance()->getVisibleOrigin();
 
 	this->setKeypadEnabled(true);
+
 
 	// 从XML中读取成绩
 	float heights[6];
@@ -40,7 +40,7 @@ bool ResultPanel::init() {
 			if (false)
 				break;
 
-			char str[10];
+			char str[30];
 			sprintf(str,"%d%s    %.0f meters", i, rank[i], heights[i]);
 			Label *font = Label::create(str, "Marker Felt", 50);
 
@@ -64,6 +64,7 @@ bool ResultPanel::init() {
 	auto mMenu = Menu::create(mMenu_1, mMenu_2, NULL);
 	mMenu->setPosition(Point(origin.x, origin.y));
 	this->addChild(mMenu);
+
 
 	return true;
 }
