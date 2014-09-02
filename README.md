@@ -29,7 +29,7 @@ offical name:天天向上 Day Day Up!
 
 		2.尝试一下撞击之后的感觉：
 			尝试着将BeginContact,置换成EndContact/Presolve/Postsolve
-
+DONE
 		3.根据当前难度提高产生较难物体的机率和提高悬浮物体横向移动的速度:
 			游戏没有关卡的存在，使用文件存储的方式实用性不高，难度的提高到目前为止只有下降的种类和移动的速度，所以在GameLayer中增加一个方法描述游戏难度的控制
 
@@ -42,9 +42,10 @@ DONE
 		2.显示帮助和作者信息
 		写两个Layer类型，一个显示选择，一个显示帮助信息
 
+DONE
 	7.MainScene中加入Quit选项，并且Quit之前会有提示窗口用于提示用户
 		写一个专门的Layer类型进行载入
-
+DONE
 	8.从GameLayer中退出需要进行提示
 		写一个专门的Layer进行载入
 
@@ -62,6 +63,7 @@ DONE
 			1.MainScene, HighScoresScene, SettingsScene同一个背景音乐
 			2.GameScene使用一个背景音乐
 			3.
+DONE
 	4.消除掉调试数据的显示
 		you can add this code in main.lua: cc.Director:getInstance():setDisplayStats(false)
 

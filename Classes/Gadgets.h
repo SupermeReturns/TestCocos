@@ -46,7 +46,40 @@ public:
 	void update(float angle);
 };
 
+/// 询问用户确认的面板，包括一条字符和两个按钮和一个背景
+class  ConfirmPanel: public Layer{
+public:
+	/// initiate an ConfirmPanel instance
+	/// @return return ture if initiate succesful,false otherwise
+	bool initWithString(const char[] str);
 
+protected:
+	void addMenu();
 
+	///  当同意的按钮被按下时被调用
+	void onYes(Ref *pSender);
 
+	///  当不同意的按钮被按下时被调用
+	void onNo(Ref *pSender);
+};
+
+class QuitGame: public ConfirmPanel
+{
+public:
+	/// create a QuitGame instance and initiate it
+	/// @return an QuitGame instance that has been autoreleased
+	static QuiGame* create();
+};
+
+class QuitApp : public ConfirmPanel
+{
+public:
+	/// create a QuitApp instance and initiate it
+	/// @return an QuitApp instance that has been autoreleased
+	static QuitApp* create();
+
+protected:
+	void addMenu();
+	void onYes(Ref *pSender);
+};
 #endif /* GADGETS_H_ */

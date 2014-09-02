@@ -28,6 +28,7 @@ void B2Sprite::initB2BodyWithParams(b2World* world, double density, float fricti
   b2BodyDef spriteBodyDef;
   spriteBodyDef.type = b2_dynamicBody;
 
+  spriteBodyDef.angle = this->getRotation() / (180 * kONE_DIV_PAI);
   spriteBodyDef.position.Set(this->getPosition().x / kPTM_RATIO,
      this->getPosition().y / kPTM_RATIO);
   spriteBodyDef.userData = this;

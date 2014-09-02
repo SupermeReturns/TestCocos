@@ -71,6 +71,6 @@ void MainScene::onKeyReleased(EventKeyboard::KeyCode kc, Event *e)
 {
 	if(kc == EventKeyboard::KeyCode::KEY_BACKSPACE)
 	{
-    	Director::getInstance()->end();
+		this->addChild(QuitApp::create());
 	}
 }

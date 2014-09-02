@@ -9,11 +9,95 @@
 #define GAMELAYER_H_
 
 #include "GameConfig.h"
+ #include <time.h>
+#include <stdlib.h>
 #include "Gadgets.h"
 #include "Use_Box/UseBox.h"
 #include "cocos2d.h"
 
 USING_NS_CC;
+
+/// GameController 负责控制Obj的生成,调节游戏的难度
+/// 随着游戏的进行，逐渐加大游戏的难度，提高高难度物体产生的几率，降低低难度物体产生的几率
+class GameController
+{
+public:
+	///  初始化随机数等工作
+	GameController():cutton_possi(), brick_possi(b)
+	{
+		count =0;
+		cutton_possi = possi[0];
+		brick_possi = cutton_possi+ possi[1];
+		iron_possi = brick_possi + possi[2];
+		stick_possi = iron_possi + possi[3];
+		bomb_possi = stick_possi + possi[4];
+	};
+
+	/// 根据比例产生随机数，从而决定下一个物体的类型, 设置物块的标签，大小，位置，之后会调整几率
+	B2Sprite* NewRandomObj()
+	{
+		B2Sprite* curObj;
+		// 根据比例产生随机数，从而决定下一个物体的类型, 设置物块的标签，大小，位置
+		srand((int)time(0));
+		int r = rand() % 100;
+		if (r < cutton_possi)
+		{
+			curObj = CuttonSprite::create();
+			curObj->setTag(kOBJ_TAG);
+		} else if (r < brick_possi) 
+		{
+			curObj = BrickSprite::create();
+			curObj->setTag(kOBJ_TAG);			
+		} else if (r < iron_possi)
+		{
+			curObj = IronSprite::create();
+			curObj->setTag(kOBJ_TAG);
+		} else if (r < stick_possi)
+		{
+			curObj = StickSprite::create();
+			curObj->setTag(kOBJ_TAG);
+		} else if ( < bomb_possi)
+		{
+			curObj = BombSprite::create();
+			curObj->setTag(kBOMB_TAG);
+		}
+
+		this->count++;
+		this->reset();
+		return curObj;
+	};
+	int getCount(){
+		return count;
+	};
+private:
+	int  possi [5] = { kCUTTON_POSSIBILITY, kBRICK_POSSIBILITY, kIRON_POSSIBILITY, kSTICK_POSSIBILITY, kBOMB_POSSIBILITY}; 
+	int cutton_possi , brick_possi, iron_possi, stick_possi, bomb_possi;
+	int count;
+	/// 调整物体产生几率
+	/// 提高高难度物体产生的几率，降低低难度物体产生的几率
+	reset()
+	{
+		for (int i =0; i<5; i++)
+		{
+			if(possi[i] != 0)
+			{
+				if (i = 4)
+				{
+					return;
+				}
+				possi[i] -=5 ;
+				possi[i+1] += 5;
+
+				cutton_possi = possi[0];
+				brick_possi = cutton_possi+ possi[1];
+				iron_possi = brick_possi + possi[2];
+				stick_possi = iron_possi + possi[3];
+				bomb_possi = stick_possi + possi[4];
+				}
+			}
+		}
+	};
+};
 
 class GameLayer: public Layer {
 public:
@@ -26,8 +110,12 @@ public:
 	/// 每次循环负责更新游戏状态(检测是否结束，是否需要移动画面)，更新小部件状态
 	/// 每次游戏循环调用一次
 	virtual void update(float delta);
+
+	~GameLayer();
 	
 private:
+	/// 负责控制Obj的生成,调节游戏的难度
+	GameController* gc;
 
 	/// 储存游戏状态，true表示游戏结束
 	bool isEnded = false;

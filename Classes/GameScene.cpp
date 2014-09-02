@@ -16,7 +16,7 @@ Scene* GameScene::createScene()
 
 bool GameScene::init()
 {
-    if ( !Layer::init() )
+    if ( !BlankScene::init() )
     {
         return false;
     }
@@ -24,4 +24,12 @@ bool GameScene::init()
 
     this->addChild( GameLayer::create() );
     return true;
+}
+
+void GameScene::onKeyReleased(EventKeyboard::KeyCode, Event *e)
+{
+    if(kc == EventKeyboard::KeyCode::KEY_BACKSPACE)
+    {
+        this->addChild(QuitGame::create());
+    }
 }

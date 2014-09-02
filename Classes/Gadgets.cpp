@@ -112,3 +112,97 @@ bool Dashboard::init() {
 void Dashboard::update(float angle) {
     m_pointer->setRotation(angle);
 }
+
+
+bool ConfirmPanel::initWithString(const char[] str)
+{
+	if (!Layer::init())
+	{
+		return false;
+	}
+	m_background_pic = Sprite::create(kCONFIRM_BACKGROUD_PATH);
+	m_background_pic.setAnchorPoint(Point(0.5f, 0.5f));
+
+	m_font = Label::create(str, "Marker Felt", 30);
+	m_font.setAnchorPoint(Point(0.5f, 0.5f));
+	m_font.setPosition(Point(0, visibleSize.height / 6));
+
+	this->addChild(m_background_pic);
+	this->addChild(m_font);
+
+	this->addMenu();
+
+	return true;
+}
+
+void ConfirmPanel::addMenu()
+{
+	auto mMenu_yes = MenuItemFont::create("Yes", CC_CALLBACK_1(ConfirmPanel::Yes, this));
+	auto mMenu_no = MenuItemFont::create("No", CC_CALLBACK_1(ConfirmPanel::Highscores, this));
+
+	menu_items_yes->setPosition(Point(visibleSize.width / 4, 0));
+	menu_items_no->setPosition(-Point(visibleSize.width / 4, 0));
+
+	auto mMenu = Menu::create(mMenu_1, mMenu_2, NULL);
+	mMenu->setPosition(visibleSize.width / 2, visibleSize.height / 2);
+	this->addChild(mMenu);
+}
+
+void ConfirmPanel::onNo(Ref *pSender)
+{
+	this->removeFromParent();
+}
+
+void ConfirmPanel::onYes(Ref *pSender)
+{
+	Director::getInstance()->popSceneWithTransition<TransitionFlipX>(1.0);	
+}
+
+
+
+
+QuiGame* QuitGame::create()
+{
+	QuitGame *pRet = new QuitGame();
+	if (pRet && pRet->initWithString(kQUIT_GAME)) {
+		pRet->autorelease();
+		return pRet;
+	} else {
+		delete pRet;
+		pRet = NULL;
+		return NULL;
+	}
+}
+
+
+
+
+QuiApp* QuitApp::create()
+{
+	QuitApp *pRet = new QuitApp();
+	if (pRet && pRet->initWithString(kQUIT_APP)) {
+		pRet->autorelease();
+		return pRet;
+	} else {
+		delete pRet;
+		pRet = NULL;
+		return NULL;
+	}
+}
+
+void QuitApp::onYes(Ref *pSender)
+{
+    	Director::getInstance()->end();
+}
+void QuitApp::addMenu()
+{
+	auto mMenu_yes = MenuItemFont::create("Yes", CC_CALLBACK_1(QuitApp::Yes, this));
+	auto mMenu_no = MenuItemFont::create("No", CC_CALLBACK_1(QuitApp::Highscores, this));
+
+	menu_items_yes->setPosition(Point(visibleSize.width / 4, 0));
+	menu_items_no->setPosition(-Point(visibleSize.width / 4, 0));
+
+	auto mMenu = Menu::create(mMenu_1, mMenu_2, NULL);
+	mMenu->setPosition(visibleSize.width / 2, visibleSize.height / 2);
+	this->addChild(mMenu);	
+}

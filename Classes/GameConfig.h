@@ -10,7 +10,8 @@
 
 /// different tags for different sprites
 const int kOBJ_TAG = 1;
-const int kPIVOT_TAG = 2;
+const int kBOMB_TAG = 2;
+const int kPIVOT_TAG = 3;
 const int kPTM_RATIO = 32;
 
 /// 世界的总体属性
@@ -21,14 +22,21 @@ const float kONE_DIV_PAI = 0.01745329252f; // 数值约等于1/π
 const float kMAX_MOTOR_TORQUE = 200.0f; // 平衡木的摩擦力大小
 const float kGROUNDBOX_PADDLE = 20.0f; // groundbox下端距离屏幕的距离
 
+/// strings of the confirm panel
+const char kQUIT_GAME = "Quit Game?";
+const char kQUIT_APP = "Quit App?";
+const char kCONFIRM_BACKGROUD_PATH = "confirm_background.png";
+
 /// dashboard组件需要的panel, pointer图片路径
 const char  kPANEL_PATH[] = "panel.jpg";
 const char  kPOINTER_PATH[] = "pointer.png";
 
 /// 产生cutton, brick, iron的机率，x表示x%的机率产生该物体(总数为100)
-const int 	kCUTTON_POSSIBILITY = 70;
+const int 	kCUTTON_POSSIBILITY = 50;
 const int 	kBRICK_POSSIBILITY 	= 20;
 const int 	kIRON_POSSIBILITY 	= 10;
+const int 	kSTICK_POSSIBILITY 	= 10;
+const int 	kBOMB_POSSIBILITY 	= 10;
 
 /// default properties for B2Sprite
 const float kDEFAULT_DENSITY = 1.0f;
@@ -42,20 +50,34 @@ const float kCUTTON_DENSITY = 1.0f;
 const float kCUTTON_FRICTION = 0.3f;
 const float kCUTTON_RESTITUTION = 0.0f;
 const float kCUTTON_SCALE = 0.25f;
-const char 	kCUTTON_PIC_PATH[] = "cutton.png";
+const char kCUTTON_PIC_PATH[] = "cutton.png";
 
 /// properties for BrickSprite
 const float kBRICK_DENSITY = 2.0f;
 const float kBRICK_FRICTION = 0.3f;
 const float kBRICK_RESTITUTION = 0.0f;
 const float kBRICK_SCALE = 0.25f;
-const char 	kBRICK_PIC_PATH[] = "brick.png";
+const char kBRICK_PIC_PATH[] = "brick.png";
 
 /// properties for IronSprite
 const float kIRON_DENSITY = 3.0f;
 const float kIRON_FRICTION = 0.3f;
 const float kIRON_RESTITUTION = 0.0f;
 const float kIRON_SCALE = 0.25f;
-const char 	kIRON_PIC_PATH[] = "iron.png";
+const char kIRON_PIC_PATH[] = "iron.png";
+
+/// properties for StickSprite
+const float kSTICK_DENSITY = 1.0f;
+const float kSTICK_FRICTION = 0.3f;
+const float kSTICK_RESTITUTION = 0.0f;
+const float kSTICK_SCALE = 0.25f;
+const char kSTICK_PIC_PATH[] = "stick.png";
+
+/// properties for BombSprite
+const float kBOMB_DENSITY = 3.0f;
+const float kBOMB_FRICTION = 0.3f;
+const float kBOMB_RESTITUTION = 0.0f;
+const float kBOMB_SCALE = 0.25f;
+const char kBOMB_PIC_PATH[] = "bomb.png";
 
 #endif /* GAMECONFIG_H_ */

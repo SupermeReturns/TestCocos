@@ -6,8 +6,6 @@
  */
 
 #include "GameLayer.h"
-#include <time.h>
-#include <stdlib.h>
 #include "Use_Box/ExtendedB2Sprite.h"
 #include "EndLayer.h"
 
@@ -29,39 +27,14 @@ void GameLayer::addNewObj()
 {
 
 	// 根据比例产生随机数，从而决定下一个物体的类型, 设置物块的标签，大小，位置
-	srand((int)time(0));
-	int r = rand() % 100;
-	if (r < kCUTTON_POSSIBILITY)
-	{
-		this->curObj = CuttonSprite::create();			
-	} else if (r < kCUTTON_POSSIBILITY + kBRICK_POSSIBILITY) 
-	{
-		this->curObj = BrickSprite::create();			
-	} else
-	{
-		this->curObj = IronSprite::create();
-	}
-	/*
-	switch (r) 
-	{
-		case 0,1,2,3,4,5,6:
-			this->curObj = CuttonSprite::create();	
-			break;
-		case 7,8:
-			this->curObj = IronSprite::create();
-			break;
-		case 9:
-			this->curObj = BrickSprite::create();
-			break;
-	}
-	*/
-	curObj->setTag(kOBJ_TAG);
+	this->curObj = this->gc->NewRandomObj();
 	curObj->setPosition(Point(visibleSize.width / 6, visibleSize.height / 6 * 5 - this->gamePanel->getPositionY()));
 	this->gamePanel->addChild(curObj);
 
 	// 设置物块的动作
-	auto a1 = MoveBy::create(1.5, Point(visibleSize.width / 6 * 4, 0));
-	auto a2 = MoveBy::create(1.5, Point(-visibleSize.width / 6 * 4, 0));
+	float t = 1.5 - this->gc->getCount() * 0.05;
+	auto a1 = MoveBy::create(t, Point(visibleSize.width / 6 * 4, 0));
+	auto a2 = MoveBy::create(t, Point(-visibleSize.width / 6 * 4, 0));
 	auto slides = Sequence::create(a1, a2, NULL);
 	auto sf = RepeatForever::create(slides);
 
@@ -100,6 +73,9 @@ bool GameLayer::init()
 
     // 每次游戏循环更新都会调用update函数
     this->scheduleUpdate();
+
+    // 初始化游戏难度控制器
+    this->gc = new GameController();
 
     // set up box2d handler
     this->bh = Box2dHandler::create();
@@ -188,4 +164,9 @@ void GameLayer::update(float delta)
 			}
 		}
 	}
+}
+
+GameLayer::~GameLayer()
+{
+	delete this->gc;
 }
