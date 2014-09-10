@@ -11,14 +11,14 @@ public:
     static cocos2d::Scene* createScene();
     virtual bool init();  
 
-	CREATE_FUNC(BlankScene);
+    CREATE_FUNC(BlankScene);
 
 protected:
 
-	Size visibleSize;
-	Point origin;
+    Size visibleSize;
+    Point origin;
 
-	virtual void onKeyReleased(EventKeyboard::KeyCode kc, Event* e);
+    virtual void onKeyReleased(EventKeyboard::KeyCode kc, Event* e);
 
 private:
 

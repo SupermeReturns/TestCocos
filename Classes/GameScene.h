@@ -13,7 +13,7 @@ public:
     virtual bool init();
     CREATE_FUNC(GameScene);
     void onKeyReleased(EventKeyboard::KeyCode, Event *e);
-
+    ~GameScene();
 };
 
 #endif // __HELLOWORLD_SCENE_H__

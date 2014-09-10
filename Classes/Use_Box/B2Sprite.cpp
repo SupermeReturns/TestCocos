@@ -7,14 +7,14 @@ bool B2Sprite::init(const std::string &filename)
 
 B2Sprite* B2Sprite::create (const std::string &filename)
 {
-	B2Sprite *bs = new B2Sprite();
-	if (bs && bs->init(filename))
-	{
-		bs->autorelease();
-		return bs;
-	}
-	delete bs;
-	return NULL;
+    B2Sprite *bs = new B2Sprite();
+    if (bs && bs->init(filename))
+    {
+        bs->autorelease();
+        return bs;
+    }
+    delete bs;
+    return NULL;
 }
 
 void B2Sprite::initB2Body(b2World* world)

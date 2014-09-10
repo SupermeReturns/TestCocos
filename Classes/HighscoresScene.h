@@ -7,7 +7,7 @@
 class ResultPanel: public cocos2d::Layer{
 public:
 
-	virtual bool init();
+    virtual bool init();
     CREATE_FUNC(ResultPanel);
 
 private:
@@ -28,7 +28,7 @@ public:
 
 private:
 
-	/// 根据保存的比赛成绩显示界面
+    /// 根据保存的比赛成绩显示界面
     void initInterface();
 };
 

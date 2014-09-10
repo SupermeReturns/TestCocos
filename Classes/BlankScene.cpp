@@ -1,6 +1,8 @@
 #include "BlankScene.h"
+#include "GameConfig.h"
 #include "SimpleAudioEngine.h"
 
+using namespace CocosDenshion;
 USING_NS_CC;
 
 Scene* BlankScene::createScene()
@@ -24,18 +26,23 @@ bool BlankScene::init()
     visibleSize = Director::getInstance()->getVisibleSize();
     origin = Director::getInstance()->getVisibleOrigin();
 
-	this->setKeypadEnabled(true);
+    this->setKeypadEnabled(true);
 
     return true;
 }
 
 void BlankScene::onKeyReleased(EventKeyboard::KeyCode kc, Event *e)
 {
-	if(kc == EventKeyboard::KeyCode::KEY_BACKSPACE)
-	{
-		Director::getInstance()->popSceneWithTransition<TransitionFlipX>(1.0);
-	}
-	else
-	{
-	}
+    if (kSOUND_ON)
+    {
+    SimpleAudioEngine::sharedEngine()->playEffect(kSX_TOUCH);
+    }
+                
+    if(kc == EventKeyboard::KeyCode::KEY_BACKSPACE)
+    {
+        Director::getInstance()->popSceneWithTransition<TransitionFlipX>(1.0);
+    }
+    else
+    {
+    }
 }

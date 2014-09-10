@@ -2,7 +2,10 @@
 #include "SettingScene.h"
 #include "GameScene.h"
 #include "HighscoresScene.h"
+#include "GameConfig.h"
+#include "Gadgets.h"
 
+using namespace CocosDenshion;
 USING_NS_CC;
 
 Scene* MainScene::createScene()
@@ -22,55 +25,92 @@ bool MainScene::init()
     {
         return false;
     }
-    CCLOG("Entering MainScene::init");
-    
+
     visibleSize = Director::getInstance()->getVisibleSize();
     origin = Director::getInstance()->getVisibleOrigin();
 
-	auto mMenu_1 = MenuItemFont::create("Play", CC_CALLBACK_1(MainScene::Play, this));
-	auto mMenu_2 = MenuItemFont::create("Highscores", CC_CALLBACK_1(MainScene::Highscores, this));
-	auto mMenu_3 = MenuItemFont::create("Settings", CC_CALLBACK_1(MainScene::Settings, this));
+    // initiate background image
+    Sprite* bg = Sprite::create(kBG_MAINSCENE_PATH);
+    bg->setAnchorPoint(Point(0.5, 0.5));
+    bg->setPosition(Point(visibleSize.width / 2, visibleSize.height / 2));
+    Size bg_size = bg->getContentSize();
+    bg->setScale(visibleSize.height/bg_size.height);
+    this->addChild(bg);
 
-	//menu_items_1->setPosition(Point(visibleSize.width / 2, visibleSize.height / 4 * 3 + origin.y));
-	//menu_items_2->setPosition(Point(visibleSize.width / 2, visibleSize.height / 4 * 2+ origin.y));
-	//menu_items_3->setPosition(Point(visibleSize.width / 2, visibleSize.height / 4 + origin.y));
+    // initiate menu items
+    auto mMenu_1 = MenuItemImage::create(kBT_PLAY_POS_PATH, kBT_PLAY_NEG_PATH, CC_CALLBACK_1(MainScene::Play, this));
+    auto mMenu_2 = MenuItemImage::create(kBT_SCORE_POS_PATH, kBT_SCORE_NEG_PATH, CC_CALLBACK_1(MainScene::Highscores, this));
+    auto mMenu_3 = MenuItemImage::create(kBT_SETTING_POS_PATH, kBT_SETTING_NEG_PATH, CC_CALLBACK_1(MainScene::Settings, this));
 
-	auto mMenu = Menu::create(mMenu_1, mMenu_2, mMenu_3, NULL);
-	mMenu->alignItemsVertically();
-	mMenu->setPosition(visibleSize.width / 2, visibleSize.height / 2);
+    auto mMenu = Menu::create(mMenu_1, mMenu_2, mMenu_3, NULL);
+    mMenu->setTag(kMENU_TAG);
+    mMenu->alignItemsVertically();
+    mMenu->setPosition(visibleSize.width / 2, visibleSize.height / 2);
 
-	this->addChild(mMenu);
+    this->addChild(mMenu);
 
-	this->setKeypadEnabled(true);
+    this->setKeypadEnabled(true);
 
     return true;
 }
 
 void MainScene::Play(cocos2d::Ref *pSender)
 {
-	auto GamScn = GameScene::createScene();
-	
-	Director::getInstance()->pushScene(TransitionFlipX::create(1, GamScn));
+    if (kSOUND_ON)
+    {
+        SimpleAudioEngine::sharedEngine()->playEffect(kSX_TOUCH);
+    }
+
+    auto GamScn = GameScene::createScene();
+    
+    Director::getInstance()->pushScene(TransitionFlipX::create(1, GamScn));
 }
 
 void MainScene::Highscores(cocos2d::Ref *pSender)
 {
-	auto HsScn = HighscoresScene::createScene();
-	
-	Director::getInstance()->pushScene(TransitionFlipX::create(1, HsScn));
+    if (kSOUND_ON)
+    {
+        SimpleAudioEngine::sharedEngine()->playEffect(kSX_TOUCH);
+    }
+
+    auto HsScn = HighscoresScene::createScene();
+    
+    Director::getInstance()->pushScene(TransitionFlipX::create(1, HsScn));
 }
 
 void MainScene::Settings(cocos2d::Ref *pSender)
 {
-	auto SetScn = SettingScene::createScene();
-	
-	Director::getInstance()->pushScene(TransitionFlipX::create(1, SetScn));
+    if (kSOUND_ON)
+    {
+        SimpleAudioEngine::sharedEngine()->playEffect(kSX_TOUCH);
+    }
+
+    auto SetScn = SettingScene::createScene();
+    
+    Director::getInstance()->pushScene(TransitionFlipX::create(1, SetScn));
 }
 
 void MainScene::onKeyReleased(EventKeyboard::KeyCode kc, Event *e)
 {
-	if(kc == EventKeyboard::KeyCode::KEY_BACKSPACE)
-	{
-		this->addChild(QuitApp::create());
-	}
+    if (kSOUND_ON)
+    {
+        SimpleAudioEngine::sharedEngine()->playEffect(kSX_TOUCH);        
+    }
+
+    if(kc == EventKeyboard::KeyCode::KEY_BACKSPACE)
+    {
+        if (this->getChildByTag(kCOMFIRM_PANEL_TAG) == NULL)
+        {
+            Layer* qa = QuitApp::create();
+            qa->setPosition(Point(visibleSize.width/2, visibleSize.height/2));
+            qa->setTag(kCOMFIRM_PANEL_TAG);
+            this->addChild(qa);
+            _eventDispatcher->pauseEventListenersForTarget(this->getChildByTag(kMENU_TAG));
+        }
+        else
+        {
+            this->removeChildByTag(kCOMFIRM_PANEL_TAG);
+            _eventDispatcher->resumeEventListenersForTarget(this->getChildByTag(kMENU_TAG));
+        }
+    }
 }

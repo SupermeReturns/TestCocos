@@ -1,5 +1,7 @@
 #include "AppDelegate.h"
 #include "MainScene.h"
+#include "SimpleAudioEngine.h" 
+#include "GameConfig.h"
 
 USING_NS_CC;
 
@@ -16,12 +18,9 @@ bool AppDelegate::applicationDidFinishLaunching() {
     auto director = Director::getInstance();
     auto glview = director->getOpenGLView();
 
-//======================================================================
-
-//======================================================================
-
     if(!glview) {
         glview = GLView::create("My Game");
+        glview->setDesignResolutionSize(960, 540, kResolutionShowAll);
         director->setOpenGLView(glview);
     }
 
@@ -37,6 +36,13 @@ bool AppDelegate::applicationDidFinishLaunching() {
     // run
     director->runWithScene(ManScn);
 
+    // init AudioEngine and play background music
+    initAudioEngine();
+    if (kSOUND_ON)
+    {
+        SimpleAudioEngine::sharedEngine()->playBackgroundMusic(kMC_OTHERSCENE, true);
+    }
+
     return true;
 }
 
@@ -45,7 +51,7 @@ void AppDelegate::applicationDidEnterBackground() {
     Director::getInstance()->stopAnimation();
 
     // if you use SimpleAudioEngine, it must be pause
-    // SimpleAudioEngine::getInstance()->pauseBackgroundMusic();
+    SimpleAudioEngine::getInstance()->pauseBackgroundMusic();
 }
 
 // this function will be called when the app is active again
@@ -53,5 +59,5 @@ void AppDelegate::applicationWillEnterForeground() {
     Director::getInstance()->startAnimation();
 
     // if you use SimpleAudioEngine, it must resume here
-    // SimpleAudioEngine::getInstance()->resumeBackgroundMusic();
+    SimpleAudioEngine::getInstance()->resumeBackgroundMusic();
 }

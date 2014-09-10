@@ -1,7 +1,7 @@
 TestCocos is an android game project using Cocos2dx-3.0 
 
 TestCocos游戏美化：
-offical name:天天向上 Day Day Up!
+The Balance Master
 1.关于游戏性的改善：
 	4.添加更加有趣的性质：
 		1.加入多种形状(根据实现难度而定，如果实现难度较大，则加入多种图片相同性质也是可以的)，
@@ -36,7 +36,7 @@ DONE
 DONE
 	5.HighScore显示显示出错 
 		待会单独进行测试
-
+Done
 	6.SettingScene：
 		1.音乐开关
 		2.显示帮助和作者信息
@@ -51,29 +51,37 @@ DONE
 
 2.关于外观的美化：
 	2.（待定）Replay的transition
-
+DONE
 	3.加入声音(音效来源:下载的游戏APK解压)：
 		音效：
-			1.普通按键点击的音效
+			1.普通按键点击的音效(touch)
 			2.点击屏幕释放物体的音效
 			3.物体坠落地面（Obj或者Pivot与GroundBox相接触）的音效，并且失败的提示音乐或则打破记录的音乐
 			4.与派生类物体相关的声音
+				1.Stick 旋转的声音，如同风扇，按住之后停止
+				2.Bomb 与Pivot 碰撞的时候的爆炸声
 			5.
 		背景音乐：
 			1.MainScene, HighScoresScene, SettingsScene同一个背景音乐
 			2.GameScene使用一个背景音乐
 			3.
+		条件：能够全局进行调控		
 DONE
 	4.消除掉调试数据的显示
 		you can add this code in main.lua: cc.Director:getInstance():setDisplayStats(false)
-
+DONE
 	5.按钮的美化,至少不要只是文字，搜寻一下Cocos的相关支持包，不行的话，在后面放张图片也是可以的。
-	  MenuItemImage
+	  MenuItemImage(Play, Highscores, Setting, Menu, Replay, Reset,Author, Help, )
+DONE
 	6.背景图片(特点：萌，卡通即可，主题相关)：，
 		1.Main Scene:
 		2.HighScore Scene:
 		3.Setting Scene:
 		4.Play Layer:背景可以是天空，从地面出发，然后会有云朵的下降表示积木的上升。
 		5.EndLayer显示的美化：出现的方式，显示的背景突出和部分透明
+
 	7.上方的角度计可以将周围的白色去除掉
 		修图即可
+DONE
+	8.屏幕适配
+	http://cocos2d.9tech.cn/news/2014/0307/39995.html

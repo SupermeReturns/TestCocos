@@ -12,14 +12,14 @@ class MainScene : private BlankScene
 public:
     static cocos2d::Scene* createScene();
     virtual bool init();  
-	CREATE_FUNC(MainScene);
+    CREATE_FUNC(MainScene);
 
-	void onKeyReleased(EventKeyboard::KeyCode, Event *e);
+    void onKeyReleased(EventKeyboard::KeyCode, Event *e);
 
 private:
-	void Play(Ref *pSender);
-	void Highscores(Ref *pSender);
-	void Settings(Ref *pSender);
+    void Play(Ref *pSender);
+    void Highscores(Ref *pSender);
+    void Settings(Ref *pSender);
 };
 
 #endif // __HELLOWORLD_SCENE_H__
